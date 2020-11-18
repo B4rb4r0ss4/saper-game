@@ -1,0 +1,176 @@
+* {
+    box-sizing: border-box;
+    margin-block-end: 0;
+}
+
+body {
+    /* background-image: url(background.jpg); */
+    background: rgb(195, 34, 99);
+    background: linear-gradient(342deg, rgba(195, 34, 99, 1) 0%, rgba(90, 45, 253, 1) 100%);
+    margin: 0px;
+    padding: 0px;
+    font-size: 16px;
+    /* background-size: cover; */
+    /* background-repeat: no-repeat; */
+}
+
+.container {
+    background-color: #f4f4f4;
+    width: 1000px;
+    /* height: 1200px; */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    box-shadow: 0.5rem 0.5rem 2rem #3f3539;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    font-family: 'Goldman', cursive;
+    font-size: 6rem;
+    color: #67595E;
+}
+
+.parameters-container {
+    display: flex;
+    margin-top: 0;
+}
+
+.parameters {
+    padding-top: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.x {
+    font-family: 'Goldman', cursive;
+    font-size: 1.5rem;
+}
+
+.question {
+    font-size: 2rem;
+    font-family: 'Goldman', cursive;
+    letter-spacing: 0.5rem;
+    font-weight: 900;
+}
+
+.inp {
+    width: 17rem;
+    border-radius: 10rem;
+    padding: 0.6rem;
+    font-size: 1rem;
+    text-align: center;
+    margin: 1.5rem;
+    font-family: 'Goldman', cursive;
+}
+
+.btn {
+    font-family: 'Goldman', cursive;
+    text-transform: uppercase;
+    padding: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-radius: 100rem;
+    font-size: 1.5rem;
+    background-color: white;
+    margin-bottom: 2rem;
+    width: 10rem;
+}
+
+.field {
+    cursor: pointer;
+    /* font-size: 2rem; */
+    margin: 5px;
+    width: 2rem;
+    flex: 1;
+    background-color: #669999;
+    font-family: 'Goldman', cursive;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.board-container {
+    margin-top: 8rem;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 2rem;
+    width: 1000px;
+    align-items: center;
+}
+
+.rows {
+    display: flex;
+    flex-shrink: shrink;
+}
+
+.bomb {
+    height: 2rem;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.darkGreen {
+    background-color: #19A56F;
+}
+
+.lightGreen {
+    background-color: #ACE1AF;
+}
+
+.yellow {
+    background-color: #FFFF99;
+}
+
+.text {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.footer {
+    font-family: 'Goldman', cursive;
+    font-size: 1.3rem;
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+}
+
+.flag {
+    height: 70px;
+}
+
+.bomb-left {
+    font-size: 3rem;
+    font-family: 'Goldman', cursive;
+    position: absolute;
+    left: 550px;
+    top: 40px;
+}
+
+.timer {
+    font-size: 3rem;
+    font-family: 'Goldman', cursive;
+    position: absolute;
+    right: 550px;
+    top: 62px;
+}
+
+.rules {
+    width: 80%;
+}
+
+.rules-text {
+    text-align: justify;
+    font-family: Lato;
+    font-size: 1.5rem;
+}
+
+.rules-logo {
+    font-size: 2rem;
+    font-family: 'Goldman', cursive;
+}
