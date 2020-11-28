@@ -38,195 +38,111 @@ const checkInputs = (inputs) => {
 };
 
 class boardElement {
-    constructor(x, y, isBomb = false, active = true) {
+    constructor(index, x, y, isBomb = false, active = true) {
+        this.index = index;
         this.x = x;
         this.y = y;
         this.isBomb = isBomb;
         this.active = active;
     }
+
     howManyBombsAround(el) {
         let bombDetected = 0;
-        const findThisElementIndex1 = (element) =>
-            element.x === this.x - 1 && element.y === this.y;
-        const findThisElementIndex2 = (element) =>
-            element.x === this.x - 1 && element.y === this.y + 1;
-        const findThisElementIndex3 = (element) =>
-            element.x === this.x - 1 && element.y === this.y - 1;
-        const findThisElementIndex4 = (element) =>
-            element.x === this.x + 1 && element.y === this.y;
-        const findThisElementIndex5 = (element) =>
-            element.x === this.x + 1 && element.y === this.y + 1;
-        const findThisElementIndex6 = (element) =>
-            element.x === this.x + 1 && element.y === this.y - 1;
-        const findThisElementIndex7 = (element) =>
-            element.x === this.x && element.y === this.y - 1;
-        const findThisElementIndex8 = (element) =>
-            element.x === this.x && element.y === this.y + 1;
-        //console.log(el.findIndex(findThisElementIndex1));
+        const findBombsFunctions = [];
+        for (let i = -1; i <= 1; i++) {
+            if (i !== 0) {
+                const findBombFunction1 = (element) =>
+                    element.x === this.x + i && element.y === this.y;
 
-        if (el.findIndex(findThisElementIndex1) !== -1) {
-            if (el[el.findIndex(findThisElementIndex1)].isBomb) {
-                bombDetected++;
-            }
-        }
-        if (el.findIndex(findThisElementIndex2) !== -1) {
-            if (el[el.findIndex(findThisElementIndex2)].isBomb) {
-                bombDetected++;
-            }
-        }
-        if (el.findIndex(findThisElementIndex3) !== -1) {
-            if (el[el.findIndex(findThisElementIndex3)].isBomb) {
-                bombDetected++;
-            }
-        }
-        if (el.findIndex(findThisElementIndex4) !== -1) {
-            if (el[el.findIndex(findThisElementIndex4)].isBomb) {
-                bombDetected++;
-            }
-        }
-        if (el.findIndex(findThisElementIndex5) !== -1) {
-            if (el[el.findIndex(findThisElementIndex5)].isBomb) {
-                bombDetected++;
-            }
-        }
-        if (el.findIndex(findThisElementIndex6) !== -1) {
-            if (el[el.findIndex(findThisElementIndex6)].isBomb) {
-                bombDetected++;
-            }
-        }
-        if (el.findIndex(findThisElementIndex7) !== -1) {
-            if (el[el.findIndex(findThisElementIndex7)].isBomb) {
-                bombDetected++;
-            }
-        }
-        if (el.findIndex(findThisElementIndex8) !== -1) {
-            if (el[el.findIndex(findThisElementIndex8)].isBomb) {
-                bombDetected++;
-            }
-        }
+                const findBombFunction2 = (element) =>
+                    element.x === this.x + i && element.y === this.y - i;
 
+                const findBombFunction3 = (element) =>
+                    element.x === this.x + i && element.y === this.y + i;
+
+                const findBombFunction4 = (element) =>
+                    element.x === this.x && element.y === this.y + i;
+
+                findBombsFunctions.push(findBombFunction1);
+                findBombsFunctions.push(findBombFunction2);
+                findBombsFunctions.push(findBombFunction3);
+                findBombsFunctions.push(findBombFunction4);
+            }
+        }
+        //console.log(findBombsFunctions);
+        findBombsFunctions.forEach((element, index) => {
+            //console.log(el.findIndex(element));
+            if (el.findIndex(element) !== -1) {
+                if (el[el.findIndex(element)].isBomb) {
+                    bombDetected++;
+                }
+            }
+        });
         this.bombsAround = bombDetected;
+        this.freeAround = [];
+        findBombsFunctions.forEach(element => {
+            if (el.findIndex(element) !== -1 && this.isBomb === false) {
+                if (el[el.findIndex(element)].isBomb === false) {
+                    this.freeAround.push(el.findIndex(element));
+                    //console.log(el.findIndex(element));
+                }
+            }
+        });
+
     }
 
-    howManyFreeAround(element) {
-        this.freeAround = [];
-        const findThisElementIndex1 = (element) =>
-            element.x === this.x - 1 &&
-            element.y === this.y &&
-            element.isBomb === false &&
-            element.bombsAround === 0;
-        const findThisElementIndex2 = (element) =>
-            element.x === this.x - 1 &&
-            element.y === this.y + 1 &&
-            element.isBomb === false &&
-            element.bombsAround === 0;
-        const findThisElementIndex3 = (element) =>
-            element.x === this.x - 1 &&
-            element.y === this.y - 1 &&
-            element.isBomb === false &&
-            element.bombsAround === 0;
-        const findThisElementIndex4 = (element) =>
-            element.x === this.x + 1 &&
-            element.y === this.y &&
-            element.bombsAround === 0;
-        const findThisElementIndex5 = (element) =>
-            element.x === this.x + 1 &&
-            element.y === this.y + 1 &&
-            element.isBomb === false &&
-            element.bombsAround === 0;
-        const findThisElementIndex6 = (element) =>
-            element.x === this.x + 1 &&
-            element.y === this.y - 1 &&
-            element.isBomb === false &&
-            element.bombsAround === 0;
-        const findThisElementIndex7 = (element) =>
-            element.x === this.x &&
-            element.y === this.y - 1 &&
-            element.isBomb === false &&
-            element.bombsAround === 0;
-        const findThisElementIndex8 = (element) =>
-            element.x === this.x &&
-            element.y === this.y + 1 &&
-            element.isBomb === false &&
-            element.bombsAround === 0;
+    openFreeFields(el) {
+        const indexFree = [];
+        this.active = false;
 
-        if (element.findIndex(findThisElementIndex1) !== -1) {
-            this.freeAround.push(element.findIndex(findThisElementIndex1));
-        }
+        this.freeAround.forEach(element => {
 
-        if (element.findIndex(findThisElementIndex2) !== -1) {
-            this.freeAround.push(element.findIndex(findThisElementIndex2));
-        }
-
-        if (element.findIndex(findThisElementIndex3) !== -1) {
-            this.freeAround.push(element.findIndex(findThisElementIndex3));
-        }
-
-        if (element.findIndex(findThisElementIndex4) !== -1) {
-            this.freeAround.push(element.findIndex(findThisElementIndex4));
-        }
-
-        if (element.findIndex(findThisElementIndex5) !== -1) {
-            this.freeAround.push(element.findIndex(findThisElementIndex5));
-        }
-
-        if (element.findIndex(findThisElementIndex6) !== -1) {
-            this.freeAround.push(element.findIndex(findThisElementIndex6));
-        }
-
-        if (element.findIndex(findThisElementIndex7) !== -1) {
-            this.freeAround.push(element.findIndex(findThisElementIndex7));
-        }
-
-        if (element.findIndex(findThisElementIndex8) !== -1) {
-            this.freeAround.push(element.findIndex(findThisElementIndex8));
-        }
+            if (el[element].bombsAround === 0) {
+                el[element].active = false;
+                document.getElementById(`${el[element].index}`).classList.add("lightGreen");
+                //el[element].openFreeFields(el);
+                //console.log('test');
+            } //else {
+            //document.getElementById(`${el[element].index}`).classList.add("darkGreen");
+            //document.getElementById(`${el[element].index}`).innerHTML = `<p class="text">${el[element].bombsAround}</p>`;
+            //}
+            el[element].freeAround.forEach(element => {
+                if (el[element].active === true && el[element].bombsAround === 0) {
+                    indexFree.push(element);
+                    //console.log(element);
+                }
+            });
+        });
+        return indexFree;
     }
 }
 
-boardElementsCreate = (width, height, howManyBombs) => {
-    let elementsX = [];
-    let elementsY = [];
-    const boardBombs = [];
+boardElementsCreate = (width, height, howManyBombs, idEl) => {
     const boardElements = [];
-    let isNotDuplicate = true;
-    //itemID = DOMqueries.container.addEventListener('click', firstMove);
-    //console.log(itemID);
-    for (let i = 0; i < howManyBombs; i++) {
-        isNotDuplicate = true;
-        const x = Math.round(Math.random() * (width - 1));
-        const y = Math.round(Math.random() * (height - 1));
-
-        elementsX.forEach((item, index) => {
-            if (item === x && elementsY[index] === y) {
-                isNotDuplicate = false;
-                i--;
-            }
-        });
-        if (isNotDuplicate) {
-            elementsX.push(x);
-            elementsY.push(y);
-            boardBombs.push(new boardElement(x, y, true));
-            isNotDuplicate = true;
-        }
-    }
+    let index = 0;
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-            let isNotElement = true;
-            boardBombs.forEach((item, i) => {
-                if (x === item.x && y === item.y) {
-                    boardElements.push(new boardElement(x, y, true));
-                    isNotElement = false;
-                }
-            });
-            if (isNotElement) {
-                boardElements.push(new boardElement(x, y));
-            }
-            isNotElement = true;
+            boardElements.push(new boardElement(index, x, y));
+            index++;
+        }
+    }
+    const randomNumbers = [];
+    while (howManyBombs > 0) {
+        const random = Math.floor(Math.random() * (width * height));
+        const isDuplicate = (el) => {
+            return el == random
+        }
+
+        if (random !== idEl && randomNumbers.some(isDuplicate) === false) {
+            boardElements[random].isBomb = true;
+            randomNumbers.push(random);
+            howManyBombs--;
         }
     }
     return boardElements;
 };
+
+
 let fieldHeight;
 const drawBoard = (width, height) => {
     let id = 0;
@@ -251,38 +167,56 @@ const drawBoard = (width, height) => {
     ).innerHTML += `<footer class="footer">© 2020 Done by: Łukasz Stodółka: <a href="https://github.com/StodolkaLukasz/">GitHub</a></footer>`;
 };
 
+
+const displayFreeFields = (el, field) => {
+    //field.freeAround [index1,...,...]    
+    if (field.bombsAround === 0) {
+        document.getElementById(`${field.index}`).classList.add("lightGreen");
+        let freeIndexes = field.openFreeFields(el);
+        console.log(freeIndexes);
+        while (freeIndexes.length !== 0) {
+            //console.log(freeIndexes);
+            freeIndexes.forEach(element => {
+
+                freeIndexes = el[element].openFreeFields(el);
+
+            });
+            //console.log(freeIndexes === []);
+        }
+
+    } else {
+        document.getElementById(`${field.index}`).classList.add("darkGreen");
+        document.getElementById(`${field.index}`).innerHTML = `<p class="text">${field.bombsAround}</p>`;
+    }
+};
+
+
+
+
 const buttonsController = (el, number) => {
     let flagNumber = number;
-    for (let i = 0; i < el.length; i++) {
+    el.forEach((element, i) => {
         document.getElementById(`${i}`).addEventListener("click", () => {
-            if (el[i].active === true) {
-                el[i].active = false;
-                if (el[i].isBomb) {
+            if (element.active === true) {
+                element.active = false;
+                if (element.isBomb) {
                     document.getElementById(`${i}`).innerHTML =
                         `<img src="bomb.png" style="width: ${fieldHeight/1.3}px; height: ${fieldHeight}px" class="bomb" alt="bomba">`;
                     alert("przegrales");
-                } else if (el[i].isBomb === false) {
-                    if (el[i].bombsAround === 0) {
-                        document.getElementById(`${i}`).classList.toggle("lightGreen");
-                        el[i].freeAround.forEach((item, ind) => {
-                            document.getElementById(`${item}`).classList.add("lightGreen");
-                            el[item].active = false;
-                        });
-                    } else if (el[i].bombsAround > 0) {
-                        document.getElementById(
-                            `${i}`
-                        ).innerHTML = `<p class="text">${el[i].bombsAround}</p>`;
-                        document.getElementById(`${i}`).classList.toggle("darkGreen");
-                    }
-                    checkIfWin(el);
+                } else if (element.isBomb === false) {
+                    displayFreeFields(el, element);
                 }
-            } else if (el[i].active === "flag") {
-                el[i].active = true;
+            } else if (element.active === "flag") {
+                element.active = true;
                 document.getElementById(`${i}`).textContent = "";
                 document.getElementById(`${i}`).classList.toggle("yellow");
                 flagNumber++;
             }
         });
+
+
+
+
 
         document.getElementById(`${i}`).addEventListener("contextmenu", () => {
             if (el[i].active === true && flagNumber > 0) {
@@ -300,7 +234,10 @@ const buttonsController = (el, number) => {
                 alert("Nie masz już flag!");
             }
         });
-    }
+    });
+
+
+
 };
 
 const checkIfWin = (el) => {
@@ -317,29 +254,20 @@ const checkIfWin = (el) => {
 
 const firstMove = () => {
     if (whichTurn === 0) {
-        itemID = event.target.id;
-        console.log(itemID);
-
-        let boardElements = boardElementsCreate(
+        itemID = parseInt(event.target.id);
+        const boardElements = boardElementsCreate(
             inputsValues.boardWidth,
             inputsValues.boardHeight,
-            inputsValues.howManyBombs
+            inputsValues.howManyBombs,
+            itemID
         );
-        console.log(boardElements[itemID]);
-        while (boardElements[itemID].isBomb) {
-            boardElements = boardElementsCreate(
-                inputsValues.boardWidth,
-                inputsValues.boardHeight,
-                inputsValues.howManyBombs
-            );
-        }
 
         boardElements.forEach((item, i) => {
             item.howManyBombsAround(boardElements);
         });
-        boardElements.forEach((item, i) => {
-            item.howManyFreeAround(boardElements);
-        });
+        // boardElements.forEach((item, i) => {
+        //     item.howManyFreeAround(boardElements);
+        // });
         console.log(boardElements);
         buttonsController(boardElements, inputsValues.howManyBombs);
         boardElements[itemID].active = false;
@@ -364,7 +292,7 @@ const firstMove = () => {
 };
 const timer = () => {
     second++;
-    console.log(second);
+    //console.log(second);
     document.querySelector(".timer").textContent = `Minęło: ${second}`;
 };
 let whichTurn = 0;
