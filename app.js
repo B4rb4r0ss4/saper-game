@@ -90,31 +90,6 @@ class boardElement {
         });
 
     }
-
-    openFreeFields(el) {
-        const indexFree = [];
-        this.active = false;
-
-        this.freeAround.forEach(element => {
-
-            if (el[element].bombsAround === 0) {
-                el[element].active = false;
-                document.getElementById(`${el[element].index}`).classList.add("lightGreen");
-                //el[element].openFreeFields(el);
-                //console.log('test');
-            } //else {
-            //document.getElementById(`${el[element].index}`).classList.add("darkGreen");
-            //document.getElementById(`${el[element].index}`).innerHTML = `<p class="text">${el[element].bombsAround}</p>`;
-            //}
-            el[element].freeAround.forEach(element => {
-                if (el[element].active === true && el[element].bombsAround === 0) {
-                    indexFree.push(element);
-                    //console.log(element);
-                }
-            });
-        });
-        return indexFree;
-    }
 }
 
 boardElementsCreate = (width, height, howManyBombs, idEl) => {
@@ -168,28 +143,6 @@ const drawBoard = (width, height) => {
 };
 
 
-const displayFreeFields = (el, field) => {
-    //field.freeAround [index1,...,...]    
-    if (field.bombsAround === 0) {
-        document.getElementById(`${field.index}`).classList.add("lightGreen");
-        let freeIndexes = field.openFreeFields(el);
-        console.log(freeIndexes);
-        while (freeIndexes.length !== 0) {
-            //console.log(freeIndexes);
-            freeIndexes.forEach(element => {
-
-                freeIndexes = el[element].openFreeFields(el);
-
-            });
-            //console.log(freeIndexes === []);
-        }
-
-    } else {
-        document.getElementById(`${field.index}`).classList.add("darkGreen");
-        document.getElementById(`${field.index}`).innerHTML = `<p class="text">${field.bombsAround}</p>`;
-    }
-};
-
 
 
 
@@ -204,7 +157,19 @@ const buttonsController = (el, number) => {
                         `<img src="bomb.png" style="width: ${fieldHeight/1.3}px; height: ${fieldHeight}px" class="bomb" alt="bomba">`;
                     alert("przegrales");
                 } else if (element.isBomb === false) {
-                    displayFreeFields(el, element);
+                    if (el[i].bombsAround === 0) {
+                        document.getElementById(`${i}`).classList.toggle("lightGreen");
+                        el[i].freeAround.forEach((item, ind) => {
+                            document.getElementById(`${item}`).classList.add("lightGreen");
+                            el[item].active = false;
+                        });
+                    } else if (element.bombsAround > 0) {
+                        document.getElementById(
+                            `${i}`
+                        ).innerHTML = `<p class="text">${element.bombsAround}</p>`;
+                        document.getElementById(`${i}`).classList.toggle("darkGreen");
+                    }
+                    checkIfWin(el);
                 }
             } else if (element.active === "flag") {
                 element.active = true;
@@ -213,9 +178,6 @@ const buttonsController = (el, number) => {
                 flagNumber++;
             }
         });
-
-
-
 
 
         document.getElementById(`${i}`).addEventListener("contextmenu", () => {
@@ -235,8 +197,6 @@ const buttonsController = (el, number) => {
             }
         });
     });
-
-
 
 };
 
