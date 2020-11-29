@@ -38,14 +38,12 @@ const checkInputs = (inputs) => {
 };
 
 class boardElement {
-    constructor(index, x, y, isBomb = false, active = true) {
-        this.index = index;
+    constructor(x, y, isBomb = false, active = true) {
         this.x = x;
         this.y = y;
         this.isBomb = isBomb;
         this.active = active;
     }
-
     howManyBombsAround(el) {
         let bombDetected = 0;
         const findBombsFunctions = [];
@@ -69,7 +67,7 @@ class boardElement {
                 findBombsFunctions.push(findBombFunction4);
             }
         }
-        //console.log(findBombsFunctions);
+        console.log(findBombsFunctions);
         findBombsFunctions.forEach((element, index) => {
             //console.log(el.findIndex(element));
             if (el.findIndex(element) !== -1) {
@@ -79,26 +77,89 @@ class boardElement {
             }
         });
         this.bombsAround = bombDetected;
-        this.freeAround = [];
-        findBombsFunctions.forEach(element => {
-            if (el.findIndex(element) !== -1 && this.isBomb === false) {
-                if (el[el.findIndex(element)].isBomb === false) {
-                    this.freeAround.push(el.findIndex(element));
-                    //console.log(el.findIndex(element));
-                }
-            }
-        });
+    }
 
+    howManyFreeAround(element) {
+        this.freeAround = [];
+        const findThisElementIndex1 = (element) =>
+            element.x === this.x - 1 &&
+            element.y === this.y &&
+            element.isBomb === false &&
+            element.bombsAround === 0;
+        const findThisElementIndex2 = (element) =>
+            element.x === this.x - 1 &&
+            element.y === this.y + 1 &&
+            element.isBomb === false &&
+            element.bombsAround === 0;
+        const findThisElementIndex3 = (element) =>
+            element.x === this.x - 1 &&
+            element.y === this.y - 1 &&
+            element.isBomb === false &&
+            element.bombsAround === 0;
+        const findThisElementIndex4 = (element) =>
+            element.x === this.x + 1 &&
+            element.y === this.y &&
+            element.bombsAround === 0;
+        const findThisElementIndex5 = (element) =>
+            element.x === this.x + 1 &&
+            element.y === this.y + 1 &&
+            element.isBomb === false &&
+            element.bombsAround === 0;
+        const findThisElementIndex6 = (element) =>
+            element.x === this.x + 1 &&
+            element.y === this.y - 1 &&
+            element.isBomb === false &&
+            element.bombsAround === 0;
+        const findThisElementIndex7 = (element) =>
+            element.x === this.x &&
+            element.y === this.y - 1 &&
+            element.isBomb === false &&
+            element.bombsAround === 0;
+        const findThisElementIndex8 = (element) =>
+            element.x === this.x &&
+            element.y === this.y + 1 &&
+            element.isBomb === false &&
+            element.bombsAround === 0;
+
+        if (element.findIndex(findThisElementIndex1) !== -1) {
+            this.freeAround.push(element.findIndex(findThisElementIndex1));
+        }
+
+        if (element.findIndex(findThisElementIndex2) !== -1) {
+            this.freeAround.push(element.findIndex(findThisElementIndex2));
+        }
+
+        if (element.findIndex(findThisElementIndex3) !== -1) {
+            this.freeAround.push(element.findIndex(findThisElementIndex3));
+        }
+
+        if (element.findIndex(findThisElementIndex4) !== -1) {
+            this.freeAround.push(element.findIndex(findThisElementIndex4));
+        }
+
+        if (element.findIndex(findThisElementIndex5) !== -1) {
+            this.freeAround.push(element.findIndex(findThisElementIndex5));
+        }
+
+        if (element.findIndex(findThisElementIndex6) !== -1) {
+            this.freeAround.push(element.findIndex(findThisElementIndex6));
+        }
+
+        if (element.findIndex(findThisElementIndex7) !== -1) {
+            this.freeAround.push(element.findIndex(findThisElementIndex7));
+        }
+
+        if (element.findIndex(findThisElementIndex8) !== -1) {
+            this.freeAround.push(element.findIndex(findThisElementIndex8));
+        }
     }
 }
 
 boardElementsCreate = (width, height, howManyBombs, idEl) => {
     const boardElements = [];
-    let index = 0;
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-            boardElements.push(new boardElement(index, x, y));
-            index++;
+            boardElements.push(new boardElement(x, y));
         }
     }
     const randomNumbers = [];
@@ -141,10 +202,6 @@ const drawBoard = (width, height) => {
         ".container"
     ).innerHTML += `<footer class="footer">© 2020 Done by: Łukasz Stodółka: <a href="https://github.com/StodolkaLukasz/">GitHub</a></footer>`;
 };
-
-
-
-
 
 const buttonsController = (el, number) => {
     let flagNumber = number;
@@ -198,6 +255,8 @@ const buttonsController = (el, number) => {
         });
     });
 
+
+
 };
 
 const checkIfWin = (el) => {
@@ -225,9 +284,9 @@ const firstMove = () => {
         boardElements.forEach((item, i) => {
             item.howManyBombsAround(boardElements);
         });
-        // boardElements.forEach((item, i) => {
-        //     item.howManyFreeAround(boardElements);
-        // });
+        boardElements.forEach((item, i) => {
+            item.howManyFreeAround(boardElements);
+        });
         console.log(boardElements);
         buttonsController(boardElements, inputsValues.howManyBombs);
         boardElements[itemID].active = false;
