@@ -12,6 +12,7 @@ body {
     font-size: 16px;
     /* background-size: cover; */
     /* background-repeat: no-repeat; */
+    outline: 0;
 }
 
 .container {
@@ -136,6 +137,7 @@ body {
 
 .Bombs0 {
     background-color: #ACE1AF;
+    cursor: default;
 }
 
 .Bombs0 .text {
@@ -149,36 +151,43 @@ body {
 
 .Bombs2 {
     background-color: #168d5f;
+    cursor: default;
 }
 
 .Bombs3 {
     background-color: #013f04;
     color: white;
+    cursor: default;
 }
 
 .Bombs4 {
     background-color: #2c86aa;
     color: white;
+    cursor: default;
 }
 
 .Bombs5 {
     background-color: #185f7e;
     color: white;
+    cursor: default;
 }
 
 .Bombs6 {
     background-color: #092c3a;
     color: white;
+    cursor: default;
 }
 
 .Bombs7 {
     background-color: #000000;
     color: white;
+    cursor: default;
 }
 
 .Bombs8 {
     background-color: #440303;
     color: white;
+    cursor: default;
 }
 
 .yellow {
@@ -240,4 +249,28 @@ body {
 .rules-logo {
     font-size: 2rem;
     font-family: 'Goldman', cursive;
+}
+
+.lose-screen {
+    font-family: 'Goldman', cursive;
+    width: 800px;
+    background-color: rgba(240, 202, 202, 0.575);
+    margin-bottom: 20px;
+}
+
+.win-screen {
+    background-color: rgba(213, 240, 202, 0.575);
+    font-family: 'Goldman', cursive;
+    width: 800px;
+    margin-bottom: 20px;
+}
+
+.game-result {
+    margin: 20px;
+    font-family: 'Goldman', cursive;
+    font-size: 40px;
+}
+
+.again {
+    width: 400px;
 }
