@@ -226,7 +226,7 @@ body {
     font-size: 3rem;
     font-family: 'Goldman', cursive;
     position: absolute;
-    left: 550px;
+    left: 65vw;
     top: 40px;
 }
 
@@ -234,7 +234,7 @@ body {
     font-size: 3rem;
     font-family: 'Goldman', cursive;
     position: absolute;
-    right: 550px;
+    right: 60vw;
     top: 62px;
 }
 
@@ -277,4 +277,13 @@ body {
 
 .again {
     width: 400px;
+}
+
+@media only screen and (min-width: 1400px) {
+    .bomb-left {
+        left: 60vw;
+    }
+    .timer {
+        right: 55vw;
+    }
 }
