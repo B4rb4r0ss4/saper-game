@@ -65,9 +65,9 @@ class Game {
             <h1 class="logo">Saper</h1>
             <div class="parameters-container">
                 <section class="parameters">
-                    <h2 class="question">Podaj Wielość planszy:</h2>
-                    <input type="number" class="board-width inp" placeholder="szerokość max.30" min="2" max="30"> <span class="x">x</span>
-                    <input type="number" class="board-height inp" placeholder="wysokość max.30" min="2" max="30">
+                    <h2 class="question">Podaj Wielkość planszy:</h2>
+                    <input type="number" class="board-width inp" placeholder="szerokość max.40" min="2" max="40"> <span class="x">x</span>
+                    <input type="number" class="board-height inp" placeholder="wysokość max.40" min="2" max="40">
                 </section>
     
                 <section class="parameters">
@@ -90,7 +90,7 @@ class Game {
 
     drawBoard() {
         let id = 0;
-        this.fieldHeight = (800 - this.boardWidth * 10) / this.boardWidth;
+        this.fieldHeight = (800 - this.boardWidth * 2) / this.boardWidth;
         this.fullBoardWidth = 800;
         for (let i = 0; i < this.boardHeight; i++) {
             document
@@ -259,7 +259,7 @@ class Game {
         if (this.result === 'inProgress') {
             this.second++;
             //console.log(second);
-            document.querySelector(".timer").textContent = `Minęło: ${this.second} sekund`;
+            document.querySelector(".timer").textContent = `Minęło: ${this.second} s`;
         }
     };
 }
@@ -322,7 +322,7 @@ class boardElement {
 
     displayYourself(fieldHeight, el) {
         if (this.isBomb === true && this.active === true) {
-            document.getElementById(this.index).innerHTML = `<img src="bomb.png" style="width: ${fieldHeight/1.3 - 4}px; height: ${fieldHeight - 4}px" class="bomb" alt="bomba">`;
+            document.getElementById(this.index).innerHTML = `<img src="bomb.png" style="width: ${fieldHeight/1.3 - 4}px; height: ${fieldHeight/1.3 - 4}px" class="bomb" alt="bomba">`;
             document.getElementById(this.index).classList.toggle("blueField");
             this.active = 'lose';
         } else if (this.isBomb === false) {
@@ -464,8 +464,8 @@ const checkInputs = (inputs) => {
     ) {
         return false;
     } else if (
-        inputs.boardWidth > 30 ||
-        inputs.boardHeight > 30 ||
+        inputs.boardWidth > 40 ||
+        inputs.boardHeight > 40 ||
         inputs.howManyBombs > inputs.boardWidth * inputs.boardHeight - 1
     ) {
         return false;
