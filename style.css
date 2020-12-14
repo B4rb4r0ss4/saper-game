@@ -95,6 +95,11 @@ body {
     align-items: center;
 }
 
+
+/* .field:hover {
+    background-color: #427979;
+} */
+
 .board-container {
     margin-top: 8rem;
     display: flex;
@@ -116,16 +121,78 @@ body {
     margin-bottom: auto;
 }
 
+.blueField:hover {
+    background-color: #427979;
+}
+
 .darkGreen {
+    background-color: #1cc584;
+    cursor: default;
+}
+
+.darkGreen:hover {
     background-color: #19A56F;
 }
 
-.lightGreen {
+.Bombs0 {
     background-color: #ACE1AF;
 }
 
+.Bombs0 .text {
+    display: none;
+}
+
+.Bombs1 {
+    background-color: #1cc584;
+    cursor: default;
+}
+
+.Bombs2 {
+    background-color: #168d5f;
+}
+
+.Bombs3 {
+    background-color: #013f04;
+    color: white;
+}
+
+.Bombs4 {
+    background-color: #2c86aa;
+    color: white;
+}
+
+.Bombs5 {
+    background-color: #185f7e;
+    color: white;
+}
+
+.Bombs6 {
+    background-color: #092c3a;
+    color: white;
+}
+
+.Bombs7 {
+    background-color: #000000;
+    color: white;
+}
+
+.Bombs8 {
+    background-color: #440303;
+    color: white;
+}
+
 .yellow {
-    background-color: #FFFF99;
+    background-color: #f5f53d;
+    cursor: grab;
+}
+
+.flag-field {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.yellow:hover {
+    background-color: #81b3b3;
 }
 
 .text {
