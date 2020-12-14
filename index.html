@@ -16,17 +16,17 @@
         <div class="parameters-container">
             <section class="parameters">
                 <h2 class="question">Podaj Wielość planszy:</h2>
-                <input type="text" class="board-width inp" placeholder="szerokość max.30"> <span class="x">x</span>
-                <input type="text" class="board-height inp" placeholder="wysokość max.30">
+                <input type="number" class="board-width inp" placeholder="szerokość max.30" min="2" max="30"> <span class="x">x</span>
+                <input type="number" class="board-height inp" placeholder="wysokość max.30" min="2" max="30">
             </section>
 
             <section class="parameters">
                 <h2 class="question">Podaj ilość bomb:</h2>
-                <input type="text" class="bombs inp" placeholder="bomby">
+                <input type="number" class="bombs inp" placeholder="bomby" min="2">
             </section>
         </div>
 
-        <button type="button" class="btn">Graj!</button>
+        <button type="button" class="btn" id="play">Graj!</button>
         <section class="rules">
             <h2 class="rules-logo">Zasady Gry</h2>
             <p class="rules-text">Gra polega na odkrywaniu na planszy poszczególnych pól w taki sposób, aby nie natrafić na minę. Na każdym z odkrytych pól napisana jest liczba min, które bezpośrednio stykają się z danym polem (od jeden do ośmiu; jeśli min jest zero to na
@@ -37,6 +37,6 @@
         <footer class="footer">© 2020 Done by: Łukasz Stodółka: <a href="https://github.com/StodolkaLukasz/">GitHub</a></footer>
     </div>
 </body>
-<script src="app.js" charset="utf-8"></script>
+<script src="newApp.js" charset="utf-8"></script>
 
 </html>
