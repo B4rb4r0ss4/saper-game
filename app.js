@@ -2,7 +2,7 @@ const DOMqueries = {
     boardWidthInput: document.querySelector(".board-width"),
     boardHeightInput: document.querySelector(".board-height"),
     howManyBombsInput: document.querySelector(".bombs"),
-    playBtn: document.querySelector(".btn"),
+    playBtn: document.querySelector("#play"),
     container: document.querySelector(".container"),
     boardContainer: document.querySelector(".board-container"),
 };
@@ -58,6 +58,34 @@ class Game {
         this.boardHeight = inputsValues.boardHeight;
         this.howManyBombs = inputsValues.howManyBombs;
         this.whichTurn = whichTurn;
+        this.flagNumber = this.howManyBombs;
+        this.second = 0;
+        this.result = 'inProgress';
+        this.text = `<div class="container" oncontextmenu="return false">
+            <h1 class="logo">Saper</h1>
+            <div class="parameters-container">
+                <section class="parameters">
+                    <h2 class="question">Podaj Wielość planszy:</h2>
+                    <input type="number" class="board-width inp" placeholder="szerokość max.30" min="2" max="30"> <span class="x">x</span>
+                    <input type="number" class="board-height inp" placeholder="wysokość max.30" min="2" max="30">
+                </section>
+    
+                <section class="parameters">
+                    <h2 class="question">Podaj ilość bomb:</h2>
+                    <input type="number" class="bombs inp" placeholder="bomby" min="2">
+                </section>
+            </div>
+    
+            <button type="button" class="btn" id="play">Graj!</button>
+            <section class="rules">
+                <h2 class="rules-logo">Zasady Gry</h2>
+                <p class="rules-text">Gra polega na odkrywaniu na planszy poszczególnych pól w taki sposób, aby nie natrafić na minę. Na każdym z odkrytych pól napisana jest liczba min, które bezpośrednio stykają się z danym polem (od jeden do ośmiu; jeśli min jest zero to na
+                    polu nie ma wpisanej liczby). Należy używać tych liczb by wydedukować gdzie schowane są miny. Jeśli oznaczymy dane pole flagą (prawym przyciskiem myszy, bądź na urządzeniu mobilnym dłuższe przytrzymanie), jest ono zabezpieczone przed odsłonięciem,
+                    dzięki czemu przez przypadek nie odsłonimy miny.</p>
+    
+            </section>
+            <footer class="footer">© 2020 Done by: Łukasz Stodółka: <a href="https://github.com/StodolkaLukasz/">GitHub</a></footer>
+        </div>`
     }
 
     drawBoard() {
@@ -66,7 +94,7 @@ class Game {
         this.fullBoardWidth = 800;
         for (let i = 0; i < this.boardHeight; i++) {
             document
-                .querySelector(".board-container")
+                .querySelector("#board-container")
                 .insertAdjacentHTML(
                     "beforeend",
                     `<div style="width: ${this.fullBoardWidth}px;" class=rows id="${i}-row"></div>`
@@ -85,30 +113,80 @@ class Game {
 
     buttonsController() {
         this.boardElements.forEach((element) => {
-            document.getElementById(element.index).addEventListener("click", () => {
-                if (element.active === true) {
-                    element.displayYourself(this.fieldHeight, this.boardElements);
-                    //element.displayFreeAround(this.fieldHeight, this.boardElements);
-                    if (element.bombsAround === 0) {
-                        recurentionFunction(this.boardElements, element.freeAround, this.fieldHeight);
-                    }
-                } else if (element.active === 'flag') {
-                    element.unflag();
-                }
-                element.displayFreeField(this.fieldHeight, this.boardElements);
-                //element.displayFieldsAround(this.fieldHeight, this.boardElements, this.boardHeight, this.boardWidth);
-                this.checkIfWin();
 
+            console.log(this.result);
+            document.getElementById(element.index).addEventListener("click", () => {
+                if (this.result === 'inProgress') {
+                    if (element.active === true) {
+                        element.displayYourself(this.fieldHeight, this.boardElements);
+                        //element.displayFreeAround(this.fieldHeight, this.boardElements);
+                        this.checkIfWin();
+                        if (element.bombsAround === 0) {
+                            recurentionFunction(this.boardElements, element.freeAround, this.fieldHeight);
+                            this.checkIfWin();
+                        }
+                    } else if (element.active === 'flag') {
+                        element.unflag(this.boardElements);
+                        this.flagNumber++;
+                        this.checkIfWin();
+                    }
+                    element.displayFreeField(this.fieldHeight, this.boardElements);
+                    //element.displayFieldsAround(this.fieldHeight, this.boardElements, this.boardHeight, this.boardWidth);
+                    this.checkIfWin();
+                    this.updateFlag();
+                    if (this.result === 'lose') {
+                        this.boardElements.forEach((element) => {
+                            if (element.isBomb === true) {
+                                element.displayYourself(this.fieldHeight, this.boardElements)
+                            }
+                        });
+                        const text = `<div class="lose-screen"><div class="game-result">Przegrałeś!</div><button class="btn again">Zagraj jeszcze raz</button></div>`;
+                        document.querySelector('.board-container').insertAdjacentHTML("afterbegin", text);
+                        document.querySelector('.again').addEventListener('click', () => {
+
+                            document.querySelector('body').innerHTML = this.text;
+                            document.querySelector('#play').addEventListener("click", newGame);
+                        });
+
+                    } else if (this.result === 'win') {
+                        const text = `<div class="win-screen"><div class="game-result">Wygrałeś!</div><button class="btn again">Zagraj jeszcze raz</button></div>`;
+                        document.querySelector('.board-container').insertAdjacentHTML("afterbegin", text);
+                        document.querySelector('.again').addEventListener('click', () => {
+
+                            document.querySelector('body').innerHTML = this.text;
+                            document.querySelector('#play').addEventListener("click", newGame);
+                        });
+                    }
+                }
             });
 
             document.getElementById(element.index).addEventListener("contextmenu", () => {
-                if (element.active === true) {
-                    element.displayFlag(this.fieldHeight, this.boardElements);
-                } else if (element.active === 'flag') {
-                    element.unflag(this.boardElements);
+                if (this.result === 'inProgress') {
+                    if (element.active === true) {
+                        if (this.flagNumber > 0) {
+                            element.displayFlag(this.fieldHeight, this.boardElements);
+                            this.flagNumber--;
+                        }
+
+                    } else if (element.active === 'flag') {
+                        element.unflag(this.boardElements);
+                        this.flagNumber++;
+                    }
+                    this.checkIfWin();
+                    this.updateFlag();
+
+                    if (this.result === 'win') {
+                        const text = `<div class="win-screen"><div class="game-result">Wygrałeś!</div><button class="btn again">Zagraj jeszcze raz</button></div>`;
+                        document.querySelector('.board-container').insertAdjacentHTML("afterbegin", text);
+                        document.querySelector('.again').addEventListener('click', () => {
+
+                            document.querySelector('body').innerHTML = this.text;
+                            document.querySelector('#play').addEventListener("click", newGame);
+                        });
+                    }
                 }
-                this.checkIfWin();
             });
+
 
 
         });
@@ -150,24 +228,40 @@ class Game {
             this.boardElements[idEl].displayYourself(this.boardHeight, this.boardElements);
             if (this.boardElements[idEl].bombsAround === 0)
                 recurentionFunction(this.boardElements, this.boardElements[idEl].freeAround, this.fieldHeight);
-
+            setInterval(this.timer, 1000);
         }
     }
 
     checkIfWin = () => {
         let bombAsFlag = 0;
+        let unactiveElements = this.boardElements.length + 1;
         this.boardElements.forEach(element => {
 
             if (element.isBomb && element.active === 'flag') {
                 bombAsFlag++;
             } else if (element.isBomb && element.active === 'lose') {
-                alert('Przegrales');
+                //alert('Przegrales');
+                this.result = 'lose';
             }
         });
         if (bombAsFlag === this.howManyBombs) {
-            alert('Wygrales');
+            this.result = 'win';
         }
     }
+
+    updateFlag = () => {
+        console.log(this.flagNumber);
+        console.log(this.howManyBombs);
+        document.querySelector(".bomb-left").innerHTML = `<img src="flag.png" class="flag" alt="flaga">${this.flagNumber}/${this.howManyBombs}`;
+    }
+
+    timer = () => {
+        if (this.result === 'inProgress') {
+            this.second++;
+            //console.log(second);
+            document.querySelector(".timer").textContent = `Minęło: ${this.second} sekund`;
+        }
+    };
 }
 
 class boardElement {
@@ -241,6 +335,7 @@ class boardElement {
     }
 
     displayFlag(fieldHeight, el) {
+
         document.getElementById(this.index).innerHTML = `<img src="flag.png" style="width: ${fieldHeight - 7}px; height: ${fieldHeight - 7}px" class="flag-field" alt="flaga">`;
         document.getElementById(this.index).classList.toggle("yellow");
         document.getElementById(this.index).classList.toggle("blueField");
@@ -270,9 +365,10 @@ class boardElement {
         indexes.forEach(element => {
             if (el.findIndex(element) !== -1) {
                 el[el.findIndex(element)].flagAround++;
-                console.log(el[el.findIndex(element)].flagAround);
+                //console.log(el[el.findIndex(element)].flagAround);
             }
         });
+
 
 
     }
@@ -338,9 +434,11 @@ class boardElement {
             indexes.forEach(element => {
                 if (el.findIndex(element) !== -1) {
                     console.log(el);
-                    if (this.flagAround == this.bombsAround)
+                    if (this.flagAround === this.bombsAround) {
                         el[el.findIndex(element)].displayYourself(fieldHeight, el);
-                    if (el[el.findIndex(element)].bombsAround === 0) {
+                        document.getElementById(el[el.findIndex(element)].index).classList.remove("blueField");
+                    }
+                    if (el[el.findIndex(element)].bombsAround === 0 && this.flagAround === this.bombsAround) {
                         recurentionFunction(el, el[el.findIndex(element)].freeAround, fieldHeight)
                     }
                 }
@@ -352,9 +450,9 @@ class boardElement {
 
 const getInputs = () => {
     return {
-        boardWidth: parseInt(DOMqueries.boardWidthInput.value),
-        boardHeight: parseInt(DOMqueries.boardHeightInput.value),
-        howManyBombs: parseInt(DOMqueries.howManyBombsInput.value),
+        boardWidth: parseInt(document.querySelector(".board-width").value),
+        boardHeight: parseInt(document.querySelector(".board-height").value),
+        howManyBombs: parseInt(document.querySelector(".bombs").value)
     };
 };
 
@@ -380,13 +478,13 @@ const checkInputs = (inputs) => {
     } else return true;
 };
 
-DOMqueries.playBtn.addEventListener("click", () => {
-    inputsValues = getInputs();
+const newGame = () => {
+    let inputsValues = getInputs();
     if (checkInputs(inputsValues)) {
         const game = new Game(inputsValues, 0);
 
         // 1. Draw board
-        DOMqueries.container.innerHTML = '<div class="board-container"></div>';
+        document.querySelector('.container').innerHTML = '<div class="board-container" id="board-container"></div>';
         document.querySelector(".container").insertAdjacentHTML("afterbegin", `<output class="bomb-left"><img src="flag.png" class="flag" alt="flaga"> ${inputsValues.howManyBombs}/${inputsValues.howManyBombs}</output><output class="timer">00.00.00</output>`);
         game.drawBoard();
         // 2. Add buttons actions
@@ -395,4 +493,6 @@ DOMqueries.playBtn.addEventListener("click", () => {
             button.addEventListener("click", game.boardElementsCreate);
         });
     }
-});
+};
+
+DOMqueries.playBtn.addEventListener("click", newGame);
