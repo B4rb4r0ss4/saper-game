@@ -236,11 +236,16 @@ class Game {
             if (element.isBomb && element.active === 'flag') {
                 bombAsFlag++;
             } else if (element.isBomb && element.active === 'lose') {
-                //alert('Przegrales');
                 this.result = 'lose';
             }
         });
-        if (bombAsFlag === this.howManyBombs) {
+        let activeFields = 0;
+        this.boardElements.forEach(element => {
+            if (element.active !== true) {
+                activeFields++;
+            }
+        });
+        if (activeFields === this.boardElements.length) {
             this.result = 'win';
         }
     }
@@ -382,24 +387,36 @@ const getInputs = () => {
     };
 };
 
+const clearInputs = () => {
+    document.querySelector(".board-width").value = '';
+    document.querySelector(".board-height").value = '';
+    document.querySelector(".bombs").value = '';
+};
+
 const checkInputs = (inputs) => {
     if (
         isNaN(inputs.boardWidth) ||
         isNaN(inputs.boardHeight) ||
         isNaN(inputs.howManyBombs)
     ) {
+        alert('Niepoprawne dane!');
+        clearInputs();
         return false;
     } else if (
         inputs.boardWidth > 40 ||
         inputs.boardHeight > 40 ||
         inputs.howManyBombs > inputs.boardWidth * inputs.boardHeight - 1
     ) {
+        clearInputs();
+        alert('Niepoprawne dane!');
         return false;
     } else if (
         inputs.boardWidth < 0 ||
         inputs.boardHeight < 0 ||
         inputs.howManyBombs < 0
     ) {
+        clearInputs();
+        alert('Niepoprawne dane!');
         return false;
     } else return true;
 };
