@@ -8,38 +8,24 @@ const DOMqueries = {
 };
 
 const recurentionFunction = (el, current, fieldHeight) => {
-    //console.log(current);
     const newCurrent = [];
 
     if (current.length !== 0) {
         current.forEach(element => {
             const isSthAround = (eld) => {
-                    //console.log(eld);
-                    //console.log(el[eld]);
-                    //console.log(el[eld].bombsAround);
-                    //console.log(el[eld].bombsAround === 0);
-                    return el[eld].bombsAround === 0 && el[eld].active === false;
-                }
-                //console.log(el[element].freeAround.some(isSthAround));
-                //console.log(el[element].freeAround);
-                //console.log(el[element].freeAround.findIndex(isSthAround));
-                //console.log(el);
+                return el[eld].bombsAround === 0 && el[eld].active === false;
+            }
+
             if (el[element].bombsAround === 0 && el[element].active === true) {
                 el[element].displayYourself(fieldHeight, el);
                 el[element].active = false;
                 document.getElementById(el[element].index).classList.remove("blueField");
-                //console.log(element);
-                const isDuplicate = (ele) => {
-                    //console.log(el);
-                    //console.log(element);
-                    return element === ele;
-                };
+
                 el[element].freeAround.forEach(elements => {
                     if (el[elements].active === true) {
                         newCurrent.push(elements);
                     }
                 });
-                //el[element].displayFreeAround(fieldHeight, el)
             } else if (el[element].freeAround.some(isSthAround) === true && el[element].active === true) {
                 el[element].displayYourself(fieldHeight, el);
                 el[element].active = false;
@@ -47,8 +33,6 @@ const recurentionFunction = (el, current, fieldHeight) => {
             }
         });
         return recurentionFunction(el, newCurrent, fieldHeight);
-    } else {
-        console.log('sth')
     }
 };
 
@@ -60,6 +44,7 @@ class Game {
         this.whichTurn = whichTurn;
         this.flagNumber = this.howManyBombs;
         this.second = 0;
+        this.minutes = 0;
         this.result = 'inProgress';
         this.text = `<div class="container" oncontextmenu="return false">
             <h1 class="logo">Saper</h1>
@@ -89,9 +74,13 @@ class Game {
     }
 
     drawBoard() {
+        // 1. Calculate fields parameters
         let id = 0;
         this.fieldHeight = (800 - this.boardWidth * 2) / this.boardWidth;
         this.fullBoardWidth = 800;
+        //
+
+        // 2. Draw board
         for (let i = 0; i < this.boardHeight; i++) {
             document
                 .querySelector("#board-container")
@@ -106,21 +95,25 @@ class Game {
                 id++;
             }
         }
+        //
+
+        // 3. Draw footer
         document.querySelector(
             ".container"
         ).innerHTML += `<footer class="footer">© 2020 Done by: Łukasz Stodółka: <a href="https://github.com/StodolkaLukasz/">GitHub</a></footer>`;
+        //
     }
 
     buttonsController() {
+        //. 1. Add functions for every fields 
         this.boardElements.forEach((element) => {
-
-            console.log(this.result);
+            // 2. Add click function
             document.getElementById(element.index).addEventListener("click", () => {
                 if (this.result === 'inProgress') {
                     if (element.active === true) {
                         element.displayYourself(this.fieldHeight, this.boardElements);
-                        //element.displayFreeAround(this.fieldHeight, this.boardElements);
                         this.checkIfWin();
+
                         if (element.bombsAround === 0) {
                             recurentionFunction(this.boardElements, element.freeAround, this.fieldHeight);
                             this.checkIfWin();
@@ -130,10 +123,12 @@ class Game {
                         this.flagNumber++;
                         this.checkIfWin();
                     }
+
                     element.displayFreeField(this.fieldHeight, this.boardElements);
-                    //element.displayFieldsAround(this.fieldHeight, this.boardElements, this.boardHeight, this.boardWidth);
+
                     this.checkIfWin();
                     this.updateFlag();
+
                     if (this.result === 'lose') {
                         this.boardElements.forEach((element) => {
                             if (element.isBomb === true) {
@@ -219,6 +214,9 @@ class Game {
             }
             this.boardElements = boardElements;
             this.boardElements.forEach((item) => {
+                item.aroundFunctions();
+            });
+            this.boardElements.forEach((item) => {
                 item.howManyBombsAround(boardElements, this.fieldHeight);
             });
             document.querySelectorAll(".field").forEach((button) => {
@@ -234,9 +232,7 @@ class Game {
 
     checkIfWin = () => {
         let bombAsFlag = 0;
-        let unactiveElements = this.boardElements.length + 1;
         this.boardElements.forEach(element => {
-
             if (element.isBomb && element.active === 'flag') {
                 bombAsFlag++;
             } else if (element.isBomb && element.active === 'lose') {
@@ -250,16 +246,20 @@ class Game {
     }
 
     updateFlag = () => {
-        console.log(this.flagNumber);
-        console.log(this.howManyBombs);
         document.querySelector(".bomb-left").innerHTML = `<img src="flag.png" class="flag" alt="flaga">${this.flagNumber}/${this.howManyBombs}`;
     }
 
     timer = () => {
         if (this.result === 'inProgress') {
-            this.second++;
-            //console.log(second);
-            document.querySelector(".timer").textContent = `Minęło: ${this.second} s`;
+            if (this.second === 59) {
+                this.minutes++;
+                this.second = 0;
+            } else {
+                this.second++;
+            }
+            const zeroBeforeSeconds = (this.second < 10) ? '0' : '';
+            const zeroBeforeMinutes = (this.minutes < 10) ? '0' : '';
+            document.querySelector(".timer").textContent = `Minęło: ${zeroBeforeMinutes + this.minutes}.${zeroBeforeSeconds + this.second}`;
         }
     };
 }
@@ -273,33 +273,34 @@ class boardElement {
         this.active = true;
         this.flagAround = 0;
     }
+    aroundFunctions() {
+        const findFunctions = [];
+        for (let i = -1; i <= 1; i++) {
+            if (i !== 0) {
+                const findFunction1 = (element) =>
+                    element.x === this.x + i && element.y === this.y;
+
+                const findFunction2 = (element) =>
+                    element.x === this.x + i && element.y === this.y - i;
+
+                const findFunction3 = (element) =>
+                    element.x === this.x + i && element.y === this.y + i;
+
+                const findFunction4 = (element) =>
+                    element.x === this.x && element.y === this.y + i;
+
+                findFunctions.push(findFunction1);
+                findFunctions.push(findFunction2);
+                findFunctions.push(findFunction3);
+                findFunctions.push(findFunction4);
+            }
+        }
+        this.findFunctions = findFunctions;
+    }
 
     howManyBombsAround(el, fieldHeight) {
         let bombDetected = 0;
-        const findBombsFunctions = [];
-        for (let i = -1; i <= 1; i++) {
-            if (i !== 0) {
-                const findBombFunction1 = (element) =>
-                    element.x === this.x + i && element.y === this.y;
-
-                const findBombFunction2 = (element) =>
-                    element.x === this.x + i && element.y === this.y - i;
-
-                const findBombFunction3 = (element) =>
-                    element.x === this.x + i && element.y === this.y + i;
-
-                const findBombFunction4 = (element) =>
-                    element.x === this.x && element.y === this.y + i;
-
-                findBombsFunctions.push(findBombFunction1);
-                findBombsFunctions.push(findBombFunction2);
-                findBombsFunctions.push(findBombFunction3);
-                findBombsFunctions.push(findBombFunction4);
-            }
-        }
-        //console.log(findBombsFunctions);
-        findBombsFunctions.forEach((element, index) => {
-            //console.log(el.findIndex(element));
+        this.findFunctions.forEach((element, index) => {
             if (el.findIndex(element) !== -1) {
                 if (el[el.findIndex(element)].isBomb) {
                     bombDetected++;
@@ -308,16 +309,13 @@ class boardElement {
         });
         this.bombsAround = bombDetected;
         this.freeAround = [];
-        findBombsFunctions.forEach(element => {
+        this.findFunctions.forEach(element => {
             if (el.findIndex(element) !== -1 && this.isBomb === false) {
                 if (el[el.findIndex(element)].isBomb === false) {
                     this.freeAround.push(el.findIndex(element));
-                    //console.log(el.findIndex(element));
                 }
             }
         });
-
-
     }
 
     displayYourself(fieldHeight, el) {
@@ -331,7 +329,6 @@ class boardElement {
             document.getElementById(this.index).classList.toggle("blueField");
             this.active = false;
         }
-        //this.displayFreeAround(fieldHeight, el)
     }
 
     displayFlag(fieldHeight, el) {
@@ -340,37 +337,11 @@ class boardElement {
         document.getElementById(this.index).classList.toggle("yellow");
         document.getElementById(this.index).classList.toggle("blueField");
         this.active = 'flag';
-        const indexes = [];
-        for (let i = -1; i <= 1; i++) {
-            if (i !== 0) {
-                const findBombFunction1 = (element) =>
-                    element.x === this.x + i && element.y === this.y;
-
-                const findBombFunction2 = (element) =>
-                    element.x === this.x + i && element.y === this.y - i;
-
-                const findBombFunction3 = (element) =>
-                    element.x === this.x + i && element.y === this.y + i;
-
-                const findBombFunction4 = (element) =>
-                    element.x === this.x && element.y === this.y + i;
-
-                indexes.push(findBombFunction1);
-                indexes.push(findBombFunction2);
-                indexes.push(findBombFunction3);
-                indexes.push(findBombFunction4);
-            }
-        }
-
-        indexes.forEach(element => {
+        this.findFunctions.forEach(element => {
             if (el.findIndex(element) !== -1) {
                 el[el.findIndex(element)].flagAround++;
-                //console.log(el[el.findIndex(element)].flagAround);
             }
         });
-
-
-
     }
 
     unflag(el) {
@@ -378,29 +349,7 @@ class boardElement {
         document.getElementById(this.index).classList.toggle("yellow");
         document.getElementById(this.index).classList.toggle("blueField");
         this.active = true;
-        const indexes = [];
-        for (let i = -1; i <= 1; i++) {
-            if (i !== 0) {
-                const findBombFunction1 = (element) =>
-                    element.x === this.x + i && element.y === this.y;
-
-                const findBombFunction2 = (element) =>
-                    element.x === this.x + i && element.y === this.y - i;
-
-                const findBombFunction3 = (element) =>
-                    element.x === this.x + i && element.y === this.y + i;
-
-                const findBombFunction4 = (element) =>
-                    element.x === this.x && element.y === this.y + i;
-
-                indexes.push(findBombFunction1);
-                indexes.push(findBombFunction2);
-                indexes.push(findBombFunction3);
-                indexes.push(findBombFunction4);
-            }
-        }
-
-        indexes.forEach(element => {
+        this.findFunctions.forEach(element => {
             if (el.findIndex(element) !== -1) {
                 el[el.findIndex(element)].flagAround--;
             }
@@ -408,32 +357,9 @@ class boardElement {
     }
 
     displayFreeField(fieldHeight, el) {
-        const indexes = [];
-        for (let i = -1; i <= 1; i++) {
-            if (i !== 0) {
-                const findBombFunction1 = (element) =>
-                    element.x === this.x + i && element.y === this.y;
-
-                const findBombFunction2 = (element) =>
-                    element.x === this.x + i && element.y === this.y - i;
-
-                const findBombFunction3 = (element) =>
-                    element.x === this.x + i && element.y === this.y + i;
-
-                const findBombFunction4 = (element) =>
-                    element.x === this.x && element.y === this.y + i;
-
-                indexes.push(findBombFunction1);
-                indexes.push(findBombFunction2);
-                indexes.push(findBombFunction3);
-                indexes.push(findBombFunction4);
-            }
-        }
-
         document.getElementById(this.index).addEventListener("dblclick", () => {
-            indexes.forEach(element => {
+            this.findFunctions.forEach(element => {
                 if (el.findIndex(element) !== -1) {
-                    console.log(el);
                     if (this.flagAround === this.bombsAround) {
                         el[el.findIndex(element)].displayYourself(fieldHeight, el);
                         document.getElementById(el[el.findIndex(element)].index).classList.remove("blueField");
@@ -485,8 +411,9 @@ const newGame = () => {
 
         // 1. Draw board
         document.querySelector('.container').innerHTML = '<div class="board-container" id="board-container"></div>';
-        document.querySelector(".container").insertAdjacentHTML("afterbegin", `<output class="bomb-left"><img src="flag.png" class="flag" alt="flaga"> ${inputsValues.howManyBombs}/${inputsValues.howManyBombs}</output><output class="timer">00.00.00</output>`);
+        document.querySelector(".container").insertAdjacentHTML("afterbegin", `<output class="bomb-left"><img src="flag.png" class="flag" alt="flaga"> ${inputsValues.howManyBombs}/${inputsValues.howManyBombs}</output><output class="timer">Minęło: 00.00</output>`);
         game.drawBoard();
+
         // 2. Add buttons actions
         const buttons = document.querySelectorAll(".field");
         buttons.forEach((button) => {
