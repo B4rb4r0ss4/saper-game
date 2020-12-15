@@ -239,14 +239,16 @@ class Game {
                 this.result = 'lose';
             }
         });
-        let activeFields = 0;
-        this.boardElements.forEach(element => {
-            if (element.active !== true) {
-                activeFields++;
+        if (this.result !== 'lose') {
+            let activeFields = 0;
+            this.boardElements.forEach(element => {
+                if (element.active !== true) {
+                    activeFields++;
+                }
+            });
+            if (activeFields === this.boardElements.length) {
+                this.result = 'win';
             }
-        });
-        if (activeFields === this.boardElements.length) {
-            this.result = 'win';
         }
     }
 
