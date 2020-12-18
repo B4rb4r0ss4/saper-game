@@ -41,6 +41,7 @@ class Game {
         this.boardWidth = inputsValues.boardWidth;
         this.boardHeight = inputsValues.boardHeight;
         this.howManyBombs = inputsValues.howManyBombs;
+        this.openMove = inputsValues.openMove;
         this.whichTurn = whichTurn;
         this.flagNumber = this.howManyBombs;
         this.second = 0;
@@ -70,7 +71,8 @@ class Game {
     
             </section>
             <footer class="footer">© 2020 Done by: Łukasz Stodółka: <a href="https://github.com/StodolkaLukasz/">GitHub</a></footer>
-        </div>`
+        </div>`;
+        this.explosion = new Audio('explosion.mp3');
     }
 
     drawBoard() {
@@ -161,6 +163,10 @@ class Game {
                     index++;
                 }
             }
+            boardElements.forEach((item) => {
+                item.aroundFunctions();
+            });
+
             const randomNumbers = [];
             let howManyBombsLeft = this.howManyBombs;
             while (howManyBombsLeft > 0) {
@@ -173,6 +179,16 @@ class Game {
                     boardElements[random].isBomb = true;
                     randomNumbers.push(random);
                     howManyBombsLeft--;
+                }
+                if (this.openMove) {
+                    boardElements[idEl].findFunctions.forEach(element => {
+                        if (boardElements.findIndex(element) !== -1) {
+                            if (boardElements[boardElements.findIndex(element)].isBomb === true) {
+                                boardElements[boardElements.findIndex(element)].isBomb = false;
+                                howManyBombsLeft++;
+                            }
+                        }
+                    });
                 }
             }
             this.boardElements = boardElements;
@@ -221,6 +237,7 @@ class Game {
                         element.displayYourself(this.fieldHeight, this.boardElements)
                     }
                 });
+                this.explosion.play();
                 const text = `<div class="lose-screen"><div class="game-result">Przegrałeś!</div><button class="btn again">Zagraj jeszcze raz</button></div>`;
                 document.querySelector('.board-container').insertAdjacentHTML("afterbegin", text);
                 document.querySelector('.again').addEventListener('click', () => {
@@ -374,7 +391,8 @@ const getInputs = () => {
     return {
         boardWidth: parseInt(document.querySelector(".board-width").value),
         boardHeight: parseInt(document.querySelector(".board-height").value),
-        howManyBombs: parseInt(document.querySelector(".bombs").value)
+        howManyBombs: parseInt(document.querySelector(".bombs").value),
+        openMove: document.querySelector('#open-move').checked
     };
 };
 
@@ -396,15 +414,15 @@ const checkInputs = (inputs) => {
     } else if (
         inputs.boardWidth > 40 ||
         inputs.boardHeight > 40 ||
-        inputs.howManyBombs > inputs.boardWidth * inputs.boardHeight - 1
+        inputs.howManyBombs > inputs.boardWidth * inputs.boardHeight - 10
     ) {
         clearInputs();
         alert('Niepoprawne dane!');
         return false;
     } else if (
-        inputs.boardWidth < 0 ||
-        inputs.boardHeight < 0 ||
-        inputs.howManyBombs < 0
+        inputs.boardWidth < 5 ||
+        inputs.boardHeight < 5 ||
+        inputs.howManyBombs < 1
     ) {
         clearInputs();
         alert('Niepoprawne dane!');
