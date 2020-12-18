@@ -124,34 +124,10 @@ class Game {
                         this.checkIfWin();
                     }
 
-                    element.displayFreeField(this.fieldHeight, this.boardElements);
+                    element.displayFreeField(this.fieldHeight, this.boardElements, this.checkIfWin);
 
                     this.checkIfWin();
                     this.updateFlag();
-
-                    if (this.result === 'lose') {
-                        this.boardElements.forEach((element) => {
-                            if (element.isBomb === true) {
-                                element.displayYourself(this.fieldHeight, this.boardElements)
-                            }
-                        });
-                        const text = `<div class="lose-screen"><div class="game-result">Przegrałeś!</div><button class="btn again">Zagraj jeszcze raz</button></div>`;
-                        document.querySelector('.board-container').insertAdjacentHTML("afterbegin", text);
-                        document.querySelector('.again').addEventListener('click', () => {
-
-                            document.querySelector('body').innerHTML = this.text;
-                            document.querySelector('#play').addEventListener("click", newGame);
-                        });
-
-                    } else if (this.result === 'win') {
-                        const text = `<div class="win-screen"><div class="game-result">Wygrałeś!</div><button class="btn again">Zagraj jeszcze raz</button></div>`;
-                        document.querySelector('.board-container').insertAdjacentHTML("afterbegin", text);
-                        document.querySelector('.again').addEventListener('click', () => {
-
-                            document.querySelector('body').innerHTML = this.text;
-                            document.querySelector('#play').addEventListener("click", newGame);
-                        });
-                    }
                 }
             });
 
@@ -169,21 +145,8 @@ class Game {
                     }
                     this.checkIfWin();
                     this.updateFlag();
-
-                    if (this.result === 'win') {
-                        const text = `<div class="win-screen"><div class="game-result">Wygrałeś!</div><button class="btn again">Zagraj jeszcze raz</button></div>`;
-                        document.querySelector('.board-container').insertAdjacentHTML("afterbegin", text);
-                        document.querySelector('.again').addEventListener('click', () => {
-
-                            document.querySelector('body').innerHTML = this.text;
-                            document.querySelector('#play').addEventListener("click", newGame);
-                        });
-                    }
                 }
             });
-
-
-
         });
     }
 
@@ -231,23 +194,49 @@ class Game {
     }
 
     checkIfWin = () => {
-        let bombAsFlag = 0;
-        this.boardElements.forEach(element => {
-            if (element.isBomb && element.active === 'flag') {
-                bombAsFlag++;
-            } else if (element.isBomb && element.active === 'lose') {
-                this.result = 'lose';
-            }
-        });
-        if (this.result !== 'lose') {
-            let activeFields = 0;
+        if (this.result === 'inProgress') {
+            let bombAsFlag = 0;
             this.boardElements.forEach(element => {
-                if (element.active !== true) {
-                    activeFields++;
+                if (element.isBomb && element.active === 'flag') {
+                    bombAsFlag++;
+                } else if (element.isBomb && element.active === 'lose') {
+                    this.result = 'lose';
                 }
             });
-            if (activeFields === this.boardElements.length) {
-                this.result = 'win';
+            if (this.result !== 'lose') {
+                let activeFields = 0;
+                this.boardElements.forEach(element => {
+                    if (element.active !== true) {
+                        activeFields++;
+                    }
+                });
+                if (activeFields === this.boardElements.length) {
+                    this.result = 'win';
+                }
+            }
+
+            if (this.result === 'lose') {
+                this.boardElements.forEach((element) => {
+                    if (element.isBomb === true) {
+                        element.displayYourself(this.fieldHeight, this.boardElements)
+                    }
+                });
+                const text = `<div class="lose-screen"><div class="game-result">Przegrałeś!</div><button class="btn again">Zagraj jeszcze raz</button></div>`;
+                document.querySelector('.board-container').insertAdjacentHTML("afterbegin", text);
+                document.querySelector('.again').addEventListener('click', () => {
+
+                    document.querySelector('body').innerHTML = this.text;
+                    document.querySelector('#play').addEventListener("click", newGame);
+                });
+
+            } else if (this.result === 'win') {
+                const text = `<div class="win-screen"><div class="game-result">Wygrałeś!</div><button class="btn again">Zagraj jeszcze raz</button></div>`;
+                document.querySelector('.board-container').insertAdjacentHTML("afterbegin", text);
+                document.querySelector('.again').addEventListener('click', () => {
+
+                    document.querySelector('body').innerHTML = this.text;
+                    document.querySelector('#play').addEventListener("click", newGame);
+                });
             }
         }
     }
@@ -363,7 +352,7 @@ class boardElement {
         });
     }
 
-    displayFreeField(fieldHeight, el) {
+    displayFreeField(fieldHeight, el, checkIfWin) {
         document.getElementById(this.index).addEventListener("dblclick", () => {
             this.findFunctions.forEach(element => {
                 if (el.findIndex(element) !== -1) {
@@ -376,8 +365,8 @@ class boardElement {
                     }
                 }
             });
+            checkIfWin();
         });
-
     }
 }
 
