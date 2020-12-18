@@ -48,30 +48,36 @@ class Game {
         this.minutes = 0;
         this.result = 'inProgress';
         this.text = `<div class="container" oncontextmenu="return false">
-            <h1 class="logo">Saper</h1>
-            <div class="parameters-container">
-                <section class="parameters">
-                    <h2 class="question">Podaj Wielkość planszy:</h2>
-                    <input type="number" class="board-width inp" placeholder="szerokość max.40" min="2" max="40"> <span class="x">x</span>
-                    <input type="number" class="board-height inp" placeholder="wysokość max.40" min="2" max="40">
-                </section>
-    
-                <section class="parameters">
-                    <h2 class="question">Podaj ilość bomb:</h2>
-                    <input type="number" class="bombs inp" placeholder="bomby" min="2">
-                </section>
-            </div>
-    
-            <button type="button" class="btn" id="play">Graj!</button>
-            <section class="rules">
-                <h2 class="rules-logo">Zasady Gry</h2>
-                <p class="rules-text">Gra polega na odkrywaniu na planszy poszczególnych pól w taki sposób, aby nie natrafić na minę. Na każdym z odkrytych pól napisana jest liczba min, które bezpośrednio stykają się z danym polem (od jeden do ośmiu; jeśli min jest zero to na
-                    polu nie ma wpisanej liczby). Należy używać tych liczb by wydedukować gdzie schowane są miny. Jeśli oznaczymy dane pole flagą (prawym przyciskiem myszy, bądź na urządzeniu mobilnym dłuższe przytrzymanie), jest ono zabezpieczone przed odsłonięciem,
-                    dzięki czemu przez przypadek nie odsłonimy miny.</p>
-    
+        <h1 class="logo">Saper</h1>
+        <div class="parameters-container">
+            <section class="parameters">
+                <h2 class="question">Podaj Wielkość planszy:</h2>
+                <input type="number" class="board-width inp" placeholder="szerokość max.40" min="5" max="40"> <span class="x">x</span>
+                <input type="number" class="board-height inp" placeholder="wysokość max.40" min="5" max="40">
             </section>
-            <footer class="footer">© 2020 Done by: Łukasz Stodółka: <a href="https://github.com/StodolkaLukasz/">GitHub</a></footer>
-        </div>`;
+
+            <section class="parameters">
+                <h2 class="question">Podaj ilość bomb:</h2>
+                <input type="number" class="bombs inp" placeholder="bomby" min="5">
+                <label class="checkbox-container">
+                    <input type="checkbox" class="checkbox" id="open-move" name="Opening-move">
+                    <label for="Opening-move" class="checkbox-label question">Otwierający ruch:</label>
+                <span class="checkmark"></span>
+                </label>
+
+            </section>
+        </div>
+
+        <button type="button" class="btn" id="play">Graj!</button>
+        <section class="rules">
+            <h2 class="rules-logo">Zasady Gry</h2>
+            <p class="rules-text">Gra polega na odkrywaniu na planszy poszczególnych pól w taki sposób, aby nie natrafić na minę. Na każdym z odkrytych pól napisana jest liczba min, które bezpośrednio stykają się z danym polem (od jeden do ośmiu; jeśli min jest zero to na
+                polu nie ma wpisanej liczby). Należy używać tych liczb by wydedukować gdzie schowane są miny. Jeśli oznaczymy dane pole flagą (prawym przyciskiem myszy, bądź na urządzeniu mobilnym dłuższe przytrzymanie), jest ono zabezpieczone przed odsłonięciem,
+                dzięki czemu przez przypadek nie odsłonimy miny.</p>
+
+        </section>
+        <footer class="footer">© 2020 Done by: Łukasz Stodółka: <a href="https://github.com/StodolkaLukasz/">GitHub</a></footer>
+    </div>`;
         this.explosion = new Audio('explosion.mp3');
     }
 
