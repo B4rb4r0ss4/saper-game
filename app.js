@@ -7,7 +7,7 @@ const DOMqueries = {
     boardContainer: document.querySelector(".board-container"),
 };
 
-const recurentionFunction = (el, current, fieldHeight) => {
+const openFreeFields = (el, current, fieldHeight) => {
     const newCurrent = [];
 
     if (current.length !== 0) {
@@ -32,7 +32,7 @@ const recurentionFunction = (el, current, fieldHeight) => {
                 document.getElementById(el[element].index).classList.remove("blueField");
             }
         });
-        return recurentionFunction(el, newCurrent, fieldHeight);
+        return openFreeFields(el, newCurrent, fieldHeight);
     }
 };
 
@@ -41,43 +41,36 @@ class Game {
         this.boardWidth = inputsValues.boardWidth;
         this.boardHeight = inputsValues.boardHeight;
         this.howManyBombs = inputsValues.howManyBombs;
-        this.openMove = inputsValues.openMove;
         this.whichTurn = whichTurn;
         this.flagNumber = this.howManyBombs;
         this.second = 0;
         this.minutes = 0;
         this.result = 'inProgress';
         this.text = `<div class="container" oncontextmenu="return false">
-        <h1 class="logo">Saper</h1>
-        <div class="parameters-container">
-            <section class="parameters">
-                <h2 class="question">Podaj Wielkość planszy:</h2>
-                <input type="number" class="board-width inp" placeholder="szerokość max.40" min="5" max="40"> <span class="x">x</span>
-                <input type="number" class="board-height inp" placeholder="wysokość max.40" min="5" max="40">
+            <h1 class="logo">Saper</h1>
+            <div class="parameters-container">
+                <section class="parameters">
+                    <h2 class="question">Podaj Wielkość planszy:</h2>
+                    <input type="number" class="board-width inp" placeholder="szerokość max.40" min="2" max="40"> <span class="x">x</span>
+                    <input type="number" class="board-height inp" placeholder="wysokość max.40" min="2" max="40">
+                </section>
+    
+                <section class="parameters">
+                    <h2 class="question">Podaj ilość bomb:</h2>
+                    <input type="number" class="bombs inp" placeholder="bomby" min="2">
+                </section>
+            </div>
+    
+            <button type="button" class="btn" id="play">Graj!</button>
+            <section class="rules">
+                <h2 class="rules-logo">Zasady Gry</h2>
+                <p class="rules-text">Gra polega na odkrywaniu na planszy poszczególnych pól w taki sposób, aby nie natrafić na minę. Na każdym z odkrytych pól napisana jest liczba min, które bezpośrednio stykają się z danym polem (od jeden do ośmiu; jeśli min jest zero to na
+                    polu nie ma wpisanej liczby). Należy używać tych liczb by wydedukować gdzie schowane są miny. Jeśli oznaczymy dane pole flagą (prawym przyciskiem myszy, bądź na urządzeniu mobilnym dłuższe przytrzymanie), jest ono zabezpieczone przed odsłonięciem,
+                    dzięki czemu przez przypadek nie odsłonimy miny.</p>
+    
             </section>
-
-            <section class="parameters">
-                <h2 class="question">Podaj ilość bomb:</h2>
-                <input type="number" class="bombs inp" placeholder="bomby" min="5">
-                <label class="checkbox-container">
-                    <input type="checkbox" class="checkbox" id="open-move" name="Opening-move">
-                    <label for="Opening-move" class="checkbox-label question">Otwierający ruch:</label>
-                <span class="checkmark"></span>
-                </label>
-
-            </section>
-        </div>
-
-        <button type="button" class="btn" id="play">Graj!</button>
-        <section class="rules">
-            <h2 class="rules-logo">Zasady Gry</h2>
-            <p class="rules-text">Gra polega na odkrywaniu na planszy poszczególnych pól w taki sposób, aby nie natrafić na minę. Na każdym z odkrytych pól napisana jest liczba min, które bezpośrednio stykają się z danym polem (od jeden do ośmiu; jeśli min jest zero to na
-                polu nie ma wpisanej liczby). Należy używać tych liczb by wydedukować gdzie schowane są miny. Jeśli oznaczymy dane pole flagą (prawym przyciskiem myszy, bądź na urządzeniu mobilnym dłuższe przytrzymanie), jest ono zabezpieczone przed odsłonięciem,
-                dzięki czemu przez przypadek nie odsłonimy miny.</p>
-
-        </section>
-        <footer class="footer">© 2020 Done by: Łukasz Stodółka: <a href="https://github.com/StodolkaLukasz/">GitHub</a></footer>
-    </div>`;
+            <footer class="footer">© 2020 Done by: Łukasz Stodółka: <a href="https://github.com/StodolkaLukasz/">GitHub</a></footer>
+        </div>`;
         this.explosion = new Audio('explosion.mp3');
     }
 
@@ -123,18 +116,13 @@ class Game {
                         this.checkIfWin();
 
                         if (element.bombsAround === 0) {
-                            recurentionFunction(this.boardElements, element.freeAround, this.fieldHeight);
+                            openFreeFields(this.boardElements, element.freeAround, this.fieldHeight);
                             this.checkIfWin();
                         }
                     } else if (element.active === 'flag') {
                         element.unflag(this.boardElements);
                         this.flagNumber++;
                         this.checkIfWin();
-                    } else if (element.active === 'questionMark') {
-                        document.getElementById(element.index).classList.remove('question-mark');
-                        document.getElementById(element.index).classList.add('blueField');
-                        document.getElementById(element.index).textContent = '';
-                        element.active = true;
                     }
 
                     element.displayFreeField(this.fieldHeight, this.boardElements, this.checkIfWin);
@@ -153,15 +141,8 @@ class Game {
                         }
 
                     } else if (element.active === 'flag') {
-                        element.questionMark(this.boardElements);
+                        element.unflag(this.boardElements);
                         this.flagNumber++;
-                        //element.unflag(this.boardElements);
-                        //this.flagNumber++;
-                    } else if (element.active === 'questionMark') {
-                        document.getElementById(element.index).classList.remove('question-mark');
-                        document.getElementById(element.index).classList.add('blueField');
-                        document.getElementById(element.index).textContent = '';
-                        element.active = true;
                     }
                     this.checkIfWin();
                     this.updateFlag();
@@ -181,10 +162,6 @@ class Game {
                     index++;
                 }
             }
-            boardElements.forEach((item) => {
-                item.aroundFunctions();
-            });
-
             const randomNumbers = [];
             let howManyBombsLeft = this.howManyBombs;
             while (howManyBombsLeft > 0) {
@@ -197,16 +174,6 @@ class Game {
                     boardElements[random].isBomb = true;
                     randomNumbers.push(random);
                     howManyBombsLeft--;
-                }
-                if (this.openMove) {
-                    boardElements[idEl].findFunctions.forEach(element => {
-                        if (boardElements.findIndex(element) !== -1) {
-                            if (boardElements[boardElements.findIndex(element)].isBomb === true) {
-                                boardElements[boardElements.findIndex(element)].isBomb = false;
-                                howManyBombsLeft++;
-                            }
-                        }
-                    });
                 }
             }
             this.boardElements = boardElements;
@@ -222,7 +189,7 @@ class Game {
             this.buttonsController();
             this.boardElements[idEl].displayYourself(this.boardHeight, this.boardElements);
             if (this.boardElements[idEl].bombsAround === 0)
-                recurentionFunction(this.boardElements, this.boardElements[idEl].freeAround, this.fieldHeight);
+                openFreeFields(this.boardElements, this.boardElements[idEl].freeAround, this.fieldHeight);
             setInterval(this.timer, 1000);
         }
     }
@@ -240,7 +207,7 @@ class Game {
             if (this.result !== 'lose') {
                 let activeFields = 0;
                 this.boardElements.forEach(element => {
-                    if (element.active !== true && element.active !== 'questionMark') {
+                    if (element.active !== true) {
                         activeFields++;
                     }
                 });
@@ -366,8 +333,7 @@ class boardElement {
 
         document.getElementById(this.index).innerHTML = `<img src="flag.png" style="width: ${fieldHeight - 7}px; height: ${fieldHeight - 7}px" class="flag-field" alt="flaga">`;
         document.getElementById(this.index).classList.toggle("yellow");
-        document.getElementById(this.index).classList.remove("blueField");
-        document.getElementById(this.index).classList.remove("question-mark");
+        document.getElementById(this.index).classList.toggle("blueField");
         this.active = 'flag';
         this.findFunctions.forEach(element => {
             if (el.findIndex(element) !== -1) {
@@ -378,8 +344,8 @@ class boardElement {
 
     unflag(el) {
         document.getElementById(this.index).textContent = "";
-        document.getElementById(this.index).classList.remove("yellow");
-        document.getElementById(this.index).classList.add("blueField");
+        document.getElementById(this.index).classList.toggle("yellow");
+        document.getElementById(this.index).classList.toggle("blueField");
         this.active = true;
         this.findFunctions.forEach(element => {
             if (el.findIndex(element) !== -1) {
@@ -397,23 +363,11 @@ class boardElement {
                         document.getElementById(el[el.findIndex(element)].index).classList.remove("blueField");
                     }
                     if (el[el.findIndex(element)].bombsAround === 0 && this.flagAround === this.bombsAround) {
-                        recurentionFunction(el, el[el.findIndex(element)].freeAround, fieldHeight)
+                        openFreeFields(el, el[el.findIndex(element)].freeAround, fieldHeight)
                     }
                 }
             });
             checkIfWin();
-        });
-    }
-
-    questionMark(el) {
-        document.getElementById(this.index).textContent = '?';
-        document.getElementById(this.index).classList.toggle('yellow');
-        document.getElementById(this.index).classList.toggle('question-mark');
-        this.active = 'questionMark';
-        this.findFunctions.forEach(element => {
-            if (el.findIndex(element) !== -1) {
-                el[el.findIndex(element)].flagAround--;
-            }
         });
     }
 }
@@ -422,8 +376,7 @@ const getInputs = () => {
     return {
         boardWidth: parseInt(document.querySelector(".board-width").value),
         boardHeight: parseInt(document.querySelector(".board-height").value),
-        howManyBombs: parseInt(document.querySelector(".bombs").value),
-        openMove: document.querySelector('#open-move').checked
+        howManyBombs: parseInt(document.querySelector(".bombs").value)
     };
 };
 
@@ -445,15 +398,15 @@ const checkInputs = (inputs) => {
     } else if (
         inputs.boardWidth > 40 ||
         inputs.boardHeight > 40 ||
-        inputs.howManyBombs > inputs.boardWidth * inputs.boardHeight - 10
+        inputs.howManyBombs > inputs.boardWidth * inputs.boardHeight - 1
     ) {
         clearInputs();
         alert('Niepoprawne dane!');
         return false;
     } else if (
-        inputs.boardWidth < 5 ||
-        inputs.boardHeight < 5 ||
-        inputs.howManyBombs < 1
+        inputs.boardWidth < 0 ||
+        inputs.boardHeight < 0 ||
+        inputs.howManyBombs < 0
     ) {
         clearInputs();
         alert('Niepoprawne dane!');
