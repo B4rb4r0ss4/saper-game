@@ -130,6 +130,11 @@ class Game {
                         element.unflag(this.boardElements);
                         this.flagNumber++;
                         this.checkIfWin();
+                    } else if (element.active === 'questionMark') {
+                        document.getElementById(element.index).classList.remove('question-mark');
+                        document.getElementById(element.index).classList.add('blueField');
+                        document.getElementById(element.index).textContent = '';
+                        element.active = true;
                     }
 
                     element.displayFreeField(this.fieldHeight, this.boardElements, this.checkIfWin);
@@ -141,15 +146,17 @@ class Game {
 
             document.getElementById(element.index).addEventListener("contextmenu", () => {
                 if (this.result === 'inProgress') {
-                    if (element.active === true) {
+                    if (element.active === true || element.active === 'questionMark') {
                         if (this.flagNumber > 0) {
                             element.displayFlag(this.fieldHeight, this.boardElements);
                             this.flagNumber--;
                         }
 
                     } else if (element.active === 'flag') {
-                        element.unflag(this.boardElements);
+                        element.questionMark(this.boardElements);
                         this.flagNumber++;
+                        //element.unflag(this.boardElements);
+                        //this.flagNumber++;
                     }
                     this.checkIfWin();
                     this.updateFlag();
@@ -228,7 +235,7 @@ class Game {
             if (this.result !== 'lose') {
                 let activeFields = 0;
                 this.boardElements.forEach(element => {
-                    if (element.active !== true) {
+                    if (element.active !== true && element.active !== 'questionMark') {
                         activeFields++;
                     }
                 });
@@ -354,7 +361,8 @@ class boardElement {
 
         document.getElementById(this.index).innerHTML = `<img src="flag.png" style="width: ${fieldHeight - 7}px; height: ${fieldHeight - 7}px" class="flag-field" alt="flaga">`;
         document.getElementById(this.index).classList.toggle("yellow");
-        document.getElementById(this.index).classList.toggle("blueField");
+        document.getElementById(this.index).classList.remove("blueField");
+        document.getElementById(this.index).classList.remove("question-mark");
         this.active = 'flag';
         this.findFunctions.forEach(element => {
             if (el.findIndex(element) !== -1) {
@@ -389,6 +397,18 @@ class boardElement {
                 }
             });
             checkIfWin();
+        });
+    }
+
+    questionMark(el) {
+        document.getElementById(this.index).textContent = '?';
+        document.getElementById(this.index).classList.toggle('yellow');
+        document.getElementById(this.index).classList.toggle('question-mark');
+        this.active = 'questionMark';
+        this.findFunctions.forEach(element => {
+            if (el.findIndex(element) !== -1) {
+                el[el.findIndex(element)].flagAround--;
+            }
         });
     }
 }
