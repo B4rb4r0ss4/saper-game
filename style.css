@@ -122,10 +122,10 @@ body {
 }
 
 .bomb {
+    background-color: red;
     height: 2rem;
     margin-top: auto;
     margin-bottom: auto;
-    background-color: red;
 }
 
 .blueField:hover {
@@ -223,23 +223,23 @@ body {
 }
 
 .flag {
-    height: 70px;
+    height: 30px;
 }
 
 .bomb-left {
-    font-size: 3rem;
+    font-size: 4vw;
     font-family: 'Goldman', cursive;
     position: absolute;
-    left: 65vw;
-    top: 40px;
+    left: 70vw;
+    top: 69px;
 }
 
 .timer {
-    font-size: 3rem;
+    font-size: 4vw;
     font-family: 'Goldman', cursive;
     position: absolute;
-    right: 60vw;
-    top: 62px;
+    right: 50vw;
+    top: 69px;
 }
 
 .rules {
@@ -283,12 +283,44 @@ body {
     width: 400px;
 }
 
-@media only screen and (min-width: 1400px) {
+@media only screen and (min-width: 1200px) {
     .bomb-left {
-        left: 60vw;
+        font-size: 3vw;
     }
     .timer {
-        right: 55vw;
+        font-size: 3vw;
+    }
+}
+
+@media only screen and (min-width: 1400px) {
+    .bomb-left {
+        left: 65vw;
+    }
+    .timer {
+        right: 50vw;
+    }
+}
+
+@media only screen and (min-width: 1600px) {
+    .bomb-left {
+        left: 65vw;
+    }
+    .timer {
+        right: 50vw;
+    }
+    .flag {
+        height: 35px;
+    }
+}
+
+@media only screen and (min-width: 1700px) {
+    .bomb-left {
+        left: 60vw;
+        font-size: 2.2vw;
+    }
+    .timer {
+        right: 50vw;
+        font-size: 2.2vw;
     }
 }
 
