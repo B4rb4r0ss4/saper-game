@@ -351,3 +351,12 @@ body {
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
 }
+
+.question-mark {
+    cursor: grab;
+    background-color: #2c86aa;
+}
+
+.question-mark:hover {
+    background-color: #81b3b3;
+}
