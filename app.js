@@ -146,7 +146,7 @@ class Game {
 
             document.getElementById(element.index).addEventListener("contextmenu", () => {
                 if (this.result === 'inProgress') {
-                    if (element.active === true || element.active === 'questionMark') {
+                    if (element.active === true) {
                         if (this.flagNumber > 0) {
                             element.displayFlag(this.fieldHeight, this.boardElements);
                             this.flagNumber--;
@@ -157,6 +157,8 @@ class Game {
                         this.flagNumber++;
                         //element.unflag(this.boardElements);
                         //this.flagNumber++;
+                    } else if (element.active === 'questionMark') {
+                        element.unflag(this.boardElements);
                     }
                     this.checkIfWin();
                     this.updateFlag();
@@ -373,8 +375,9 @@ class boardElement {
 
     unflag(el) {
         document.getElementById(this.index).textContent = "";
-        document.getElementById(this.index).classList.toggle("yellow");
-        document.getElementById(this.index).classList.toggle("blueField");
+        document.getElementById(this.index).classList.remove("yellow");
+        document.getElementById(this.index).classList.remove("question-mark");
+        document.getElementById(this.index).classList.add("blueField");
         this.active = true;
         this.findFunctions.forEach(element => {
             if (el.findIndex(element) !== -1) {
