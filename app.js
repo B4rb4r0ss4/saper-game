@@ -46,6 +46,7 @@ class Game {
         this.flagNumber = this.howManyBombs;
         this.second = 0;
         this.minutes = 0;
+        this.hours = 0;
         this.result = 'inProgress';
         this.text = `<div class="container" oncontextmenu="return false">
         <h1 class="logo">Saper</h1>
@@ -285,12 +286,17 @@ class Game {
             if (this.second === 59) {
                 this.minutes++;
                 this.second = 0;
+            } else if (this.minutes === 59 && this.second === 59) {
+                this.minutes = 0;
+                this.second = 0;
+                this.hours++
             } else {
                 this.second++;
             }
             const zeroBeforeSeconds = (this.second < 10) ? '0' : '';
             const zeroBeforeMinutes = (this.minutes < 10) ? '0' : '';
-            document.querySelector(".timer").textContent = `Minęło: ${zeroBeforeMinutes + this.minutes}.${zeroBeforeSeconds + this.second}`;
+            const zeroBeforeHours = (this.second < 10) ? '0' : '';
+            document.querySelector(".timer").textContent = `Minęło: ${zeroBeforeHours + this.hours}.${zeroBeforeMinutes + this.minutes}.${zeroBeforeSeconds + this.second}`;
         }
     };
 }
@@ -469,7 +475,7 @@ const newGame = () => {
 
         // 1. Draw board
         document.querySelector('.container').innerHTML = '<div class="board-container" id="board-container"></div>';
-        document.querySelector(".container").insertAdjacentHTML("afterbegin", `<output class="bomb-left"><img src="flag.png" class="flag" alt="flaga"> ${inputsValues.howManyBombs}/${inputsValues.howManyBombs}</output><output class="timer">Minęło: 00.00</output>`);
+        document.querySelector(".container").insertAdjacentHTML("afterbegin", `<output class="bomb-left"><img src="flag.png" class="flag" alt="flaga"> ${inputsValues.howManyBombs}/${inputsValues.howManyBombs}</output><output class="timer">Minęło: 00.00.00</output>`);
         game.drawBoard();
 
         // 2. Add buttons actions
