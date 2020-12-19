@@ -295,7 +295,7 @@ class Game {
             }
             const zeroBeforeSeconds = (this.second < 10) ? '0' : '';
             const zeroBeforeMinutes = (this.minutes < 10) ? '0' : '';
-            const zeroBeforeHours = (this.second < 10) ? '0' : '';
+            const zeroBeforeHours = (this.hours < 10) ? '0' : '';
             document.querySelector(".timer").textContent = `Minęło: ${zeroBeforeHours + this.hours}.${zeroBeforeMinutes + this.minutes}.${zeroBeforeSeconds + this.second}`;
         }
     };
