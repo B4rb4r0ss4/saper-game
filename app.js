@@ -158,7 +158,10 @@ class Game {
                         //element.unflag(this.boardElements);
                         //this.flagNumber++;
                     } else if (element.active === 'questionMark') {
-                        element.unflag(this.boardElements);
+                        document.getElementById(element.index).classList.remove('question-mark');
+                        document.getElementById(element.index).classList.add('blueField');
+                        document.getElementById(element.index).textContent = '';
+                        element.active = true;
                     }
                     this.checkIfWin();
                     this.updateFlag();
@@ -376,7 +379,6 @@ class boardElement {
     unflag(el) {
         document.getElementById(this.index).textContent = "";
         document.getElementById(this.index).classList.remove("yellow");
-        document.getElementById(this.index).classList.remove("question-mark");
         document.getElementById(this.index).classList.add("blueField");
         this.active = true;
         this.findFunctions.forEach(element => {
