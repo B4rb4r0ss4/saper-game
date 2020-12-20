@@ -138,13 +138,13 @@ class Game {
                         element.active = true;
                     }
 
-                    element.displayFreeField(this.fieldHeight, this.boardElements, this.checkIfWin);
+
 
                     this.checkIfWin();
                     this.updateFlag();
                 }
             });
-
+            element.displayFreeField(this.fieldHeight, this.boardElements, this.checkIfWin);
             document.getElementById(element.index).addEventListener("contextmenu", () => {
                 if (this.result === 'inProgress') {
                     if (element.active === true) {
@@ -395,7 +395,7 @@ class boardElement {
     }
 
     displayFreeField(fieldHeight, el, checkIfWin) {
-        document.getElementById(this.index).addEventListener("dblclick", () => {
+        document.getElementById(this.index).addEventListener("click", () => {
             this.findFunctions.forEach(element => {
                 if (el.findIndex(element) !== -1) {
                     if (this.flagAround === this.bombsAround) {
