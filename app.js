@@ -42,6 +42,7 @@ class Game {
         this.boardHeight = inputsValues.boardHeight;
         this.howManyBombs = inputsValues.howManyBombs;
         this.openMove = inputsValues.openMove;
+        console.log(this.openMove);
         this.whichTurn = whichTurn;
         this.flagNumber = this.howManyBombs;
         this.second = 0;
@@ -53,15 +54,15 @@ class Game {
         <div class="parameters-container">
             <section class="parameters">
                 <h2 class="question">Podaj Wielkość planszy:</h2>
-                <input type="number" class="board-width inp" placeholder="szerokość max.40" min="5" max="40"> <span class="x">x</span>
-                <input type="number" class="board-height inp" placeholder="wysokość max.40" min="5" max="40">
+                <input type="number" class="board-width inp" placeholder="szerokość max.40" min="5" max="40" value="${this.boardWidth}"> <span class="x">x</span>
+                <input type="number" class="board-height inp" placeholder="wysokość max.40" min="5" max="40" value="${this.boardHeight}">
             </section>
 
             <section class="parameters">
                 <h2 class="question">Podaj ilość bomb:</h2>
-                <input type="number" class="bombs inp" placeholder="bomby" min="5">
+                <input type="number" class="bombs inp" placeholder="bomby" min="5" value="${this.howManyBombs}">
                 <label class="checkbox-container">
-                    <input type="checkbox" class="checkbox" id="open-move" name="Opening-move">
+                    <input type="checkbox" class="checkbox" id="open-move" name="Opening-move" ${this.openMove ? 'checked="true"' : ''}">
                     <label for="Opening-move" class="checkbox-label question">Otwierający ruch:</label>
                 <span class="checkmark"></span>
                 </label>
