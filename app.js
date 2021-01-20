@@ -48,7 +48,6 @@ class Game {
     this.boardHeight = inputsValues.boardHeight;
     this.howManyBombs = inputsValues.howManyBombs;
     this.openMove = inputsValues.openMove;
-    console.log(this.openMove);
     this.whichTurn = whichTurn;
     this.flagNumber = this.howManyBombs;
     this.second = 0;
@@ -136,6 +135,11 @@ class Game {
     this.boardElements.forEach(element => {
       // 2. Add click function
       document.getElementById(element.index).addEventListener('click', () => {
+        element.displayFreeField(
+          this.fieldHeight,
+          this.boardElements,
+          this.checkIfWin
+        );
         if (this.result === 'inProgress') {
           if (element.active === true) {
             element.displayYourself(this.fieldHeight, this.boardElements);
@@ -165,11 +169,6 @@ class Game {
           this.updateFlag();
         }
       });
-      element.displayFreeField(
-        this.fieldHeight,
-        this.boardElements,
-        this.checkIfWin
-      );
       document
         .getElementById(element.index)
         .addEventListener('contextmenu', () => {
@@ -182,8 +181,6 @@ class Game {
             } else if (element.active === 'flag') {
               element.questionMark(this.boardElements);
               this.flagNumber++;
-              //element.unflag(this.boardElements);
-              //this.flagNumber++;
             } else if (element.active === 'questionMark') {
               document
                 .getElementById(element.index)
@@ -229,6 +226,7 @@ class Game {
           randomNumbers.push(random);
           howManyBombsLeft--;
         }
+
         if (this.openMove) {
           boardElements[idEl].findFunctions.forEach(element => {
             if (boardElements.findIndex(element) !== -1) {
@@ -450,33 +448,32 @@ class boardElement {
   }
 
   displayFreeField(fieldHeight, el, checkIfWin) {
-    document.getElementById(this.index).addEventListener('click', () => {
-      this.findFunctions.forEach(element => {
-        if (el.findIndex(element) !== -1) {
-          if (this.flagAround === this.bombsAround && this.isBomb === false) {
-            el[el.findIndex(element)].displayYourself(fieldHeight, el);
-            document
-              .getElementById(el[el.findIndex(element)].index)
-              .classList.remove('blueField');
-            document
-              .getElementById(el[el.findIndex(element)].index)
-              .classList.remove('question-mark');
-          }
-          if (
-            el[el.findIndex(element)].bombsAround === 0 &&
-            this.flagAround === this.bombsAround &&
-            this.isBomb === false
-          ) {
-            openFreeFields(
-              el,
-              el[el.findIndex(element)].freeAround,
-              fieldHeight
-            );
-          }
+    this.findFunctions.forEach(element => {
+      if (el.findIndex(element) !== -1) {
+        if (
+          this.flagAround === this.bombsAround &&
+          this.isBomb === false &&
+          this.active === false
+        ) {
+          el[el.findIndex(element)].displayYourself(fieldHeight, el);
+          document
+            .getElementById(el[el.findIndex(element)].index)
+            .classList.remove('blueField');
+          document
+            .getElementById(el[el.findIndex(element)].index)
+            .classList.remove('question-mark');
         }
-      });
-      checkIfWin();
+        if (
+          el[el.findIndex(element)].bombsAround === 0 &&
+          this.flagAround === this.bombsAround &&
+          this.isBomb === false &&
+          this.active === false
+        ) {
+          openFreeFields(el, el[el.findIndex(element)].freeAround, fieldHeight);
+        }
+      }
     });
+    checkIfWin();
   }
 
   questionMark(el) {
