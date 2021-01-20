@@ -398,7 +398,10 @@ class boardElement {
   }
 
   displayYourself(fieldHeight, el) {
-    if (this.isBomb === true && this.active === true) {
+    if (
+      this.isBomb === true &&
+      (this.active === true || this.active === 'questionMark')
+    ){
       document.getElementById(
         this.index
       ).innerHTML = `<img src="bomb.png" style="width: ${
